@@ -5,7 +5,7 @@ New subscription "Lab- Binod Baniya (FOF)" was created by Rolf Anderson to me an
 credentials used:
 ````bash
 Binod1
-pw: ""testrhd1
+pw: @@rhdtest1
 ````
 
 Once the Azure database for MySql was created inside the Azure , opened it and went into connect section.Following commands were executed to dump the database into Azure.
@@ -20,7 +20,18 @@ ssl-mode=require
 ````
 
 
-1. `mysql -h rhdtestprod.mysql.database.azure.com -P 3306 -u Binod1 -p`
+
+Steps to connect to the database and then dump our sql database into the Azure
+
+1. mysql -h rhdtestprod.mysql.database.azure.com -P 3306 -u Binod1 -p
+Enter my password: @@rhdtest1
+
+2. After the connection is successful, If we do `show database`, we can see rhd prod as the new database that we create in Azure.
+database name: rhdprod
+
+3. Then before dumping our database, we used the command `use rhdprod`
+
+4. Then , I dumped my database from the computer using this command where I directly source it through my local machine and it took quite some time to dump all the databases.
 
 
 
@@ -70,9 +81,32 @@ export default defineConfig({
 8. repository - UiT-v2
 9. branch - main
 10. Build Presets - SvelteKit
-11. app location - 
-12. output location - 
+11. app location - ./
+12. api_location - build/server
+12. output location - build/static
 
 After all these configurations, we an preview it first and then create it.It will automatically deploy the site and provide us the link for our site which can be found on the overview page.
 
 The link for the test production is given below:
+
+
+
+imp:
+config in .yml file that hosted the frontend
+
+app_location: "./" # App source code path
+api_location: "build/server" # Api source code path - optional
+output_location: "build/static" # Built app content directory - optional
+
+
+
+
+
+
+
+/history : page has the perfect lenght of the text 
+problems wtih less importance.
+1. my mac the home page is of perfect size but for the larger screen in my office the home page looks wit lots of space on the box.
+2. width of the container in the about us page looks nice in mac but it doesnot look good in large screen.
+3. width of the container in the contact us page looks nice in mac but it is not good in large screen
+4. 
