@@ -137,25 +137,11 @@ https://www.youtube.com/watch?v=fpR1TtrheVE
 
 
 back up default file
-"server {
-    #proxy_cache cache;
-        #proxy_cache_valid 200 1s;
-    listen 8080;
-    listen [::]:8080;
-    # root /home/site/wwwroot;
-    root /home/site/wwwroot/public; #changed for laravel
-root@histlabbac-17216d17:/home/site/wwwroot/public# nano /etc/nginx/sites-available/default
-root@histlabbac-17216d17:/home/site/wwwroot/public# cat /etc/nginx/sites-available/default
-server {
-    #proxy_cache cache;
-        #proxy_cache_valid 200 1s;
-    listen 8080;
-root@histlabbac-17216d17:/home/site/wwwroot# nginx -t
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-root@histlabbac-17216d17:/home/site/wwwroot# systemctl restart nginx
--bash: systemctl: command not found
-root@histlabbac-17216d17:/home/site/wwwroot# cat /etc/nginx/sites-available/default
+
+ you will get the default file here
+ cd /etc/nginx/sites-available/
+
+"
 server {
     #proxy_cache cache;
         #proxy_cache_valid 200 1s;
@@ -206,3 +192,36 @@ server {
         fastcgi_temp_file_write_size 256k;
     }
 }"
+
+
+
+# use this command to restart the nginx service
+service nginx restart
+
+to check if gender 0 is included from the database table. first I tried with database.sqlite in desktop
+SELECT kjonn, COUNT(*) 
+FROM coded_census 
+WHERE kilde = 'census_1910' 
+AND kommunenr = '1902'
+GROUP BY kjonn;
+
+
+both database.sqlite and histlab_tables_copy_new doesnot have gender 0. which means the database in azure should give data without gender 0
+
+
+the problem was with the part where we had defined the gender as such  in the frontend and to fix it we need to handle both inter and string types
+as shown below
+before
+"{#if data.gender === "1"}"
+{#if femaleData.age_group === data.age_group && femaleData.gender === "2"}
+
+after
+"{#if data.gender === "1" || data.gender === 1}"
+{#if femaleData.age_group === data.age_group && (femaleData.gender === "2" || femaleData.gender === 2)}
+
+
+for the occupation code, this didnot work because, the occupation code was written as 06110 instead of 6110. so it might not work in the local versio now.
+
+to load the site and test, the api is changed as shown below>
+/api/population-by-marital-group-based-on-gender/${selectedYear}`
+
