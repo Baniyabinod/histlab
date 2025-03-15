@@ -225,3 +225,34 @@ for the occupation code, this didnot work because, the occupation code was writt
 to load the site and test, the api is changed as shown below>
 /api/population-by-marital-group-based-on-gender/${selectedYear}`
 
+
+# Fix the data loading part from the azure backend by enabling the Cross-Origin Resource Sharing (CORS) 
+The value for the CORS is set as * for now because, even this link didnot work for the first time which says to enable CORS from azure sites
+https://*.azurestaticapps.net
+
+However, one thing to note here, every time you change some setting in the azure backend, you need to change the content for the default to support laravel because, this will be broken. and then restart the ngnix server.
+
+# Tested the map page with the code given below 
+This code is used in map routes inside page.svelte for fixing the CORS errors and also validated environment varaible is not set correctly in Azure for backend URL, so we have to put the code as shown below for now. but in the future once the environment variable is set correctly, we can simply remove these codes from here and use laravel backend from the enviroment variable set in azure and load our data.
+````bash
+console.log('All environment variables:', import.meta.env);
+  const backendUrlTest = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://histlabbackend-fkbxbmhkdbccf0hn.norwayeast-01.azurewebsites.net';
+  console.log('Backend URL:', backendUrl); // Debugging
+  console.log('Backend URLTest:', backendUrlTest); // Debugging
+
+````
+then in the fetch we can use it like this:
+`${backendUrl}/population-by-gender-group-municipality/${selectedYear}/${cityCode}`
+
+but once the environment variable is set correctly, we can use it simply like this:
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+After all these are fixed, need to fix the environment variable for the email part. as the code their is also commented because of this environment configuration issue with frontend error.
+
+to do:
+search on google how the environment variables are set in azure static app and written in code to access the data
+ask team in Nepal
+ask rolf 
+
+
