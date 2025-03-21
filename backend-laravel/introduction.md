@@ -34,7 +34,7 @@ https://dev.mysql.com/downloads/workbench/
 
 
 
-## step followed for deploymeny
+## step followed for deployment
 Pre-deployment Checklist
 1. Ensure All Dependencies Are Installed
 Run the following command in your project root to make sure all required dependencies are installed:
@@ -42,6 +42,7 @@ Run the following command in your project root to make sure all required depende
 composer install --no-dev --prefer-dist
 
 output:
+
 Installing dependencies from lock file
 Verifying lock file contents can be installed on current platform.
 Package operations: 0 installs, 0 updates, 33 removals
@@ -94,19 +95,20 @@ Use the `composer fund` command to find out more!
 
 2. Generate the Application Key (if not already set)
 
-Edit
-php artisan key:generate
+`php artisan key:generate`
 
 output:
    INFO  Application key set successfully.
 
 3. Run Database Migrations (if needed)
-If you have migrations that need to be applied to your SQLite database, run:
+If you have migrations that need to be applied to your SQLite database, run the following command given below.Since SQLite is a file-based database, ensure the database file exists before migrating.
 
-php artisan migrate
-Since SQLite is a file-based database, ensure the database file exists before migrating.
+`php artisan migrate`
+
+
 
 output:
+
   INFO  Preparing database.
 
   Creating migration table ............................................................................................................ 15.90ms DONE
@@ -118,30 +120,34 @@ output:
   0001_01_01_000002_create_jobs_table ................................................................................................. 23.79ms DONE
   2024_09_19_094442_create_personal_access_tokens_table ................................................................................ 9.88ms DONE
 
-  4. went to azure and created the web app.
-  then added the following configurations in the App settings in environment varaibles>
-Key: DB_CONNECTION
-Value: sqlite
+  4. went to azure and created the web app.then added the following configurations in the App settings in environment varaibles>
 
+`Key: DB_CONNECTION
+Value: sqlite
 Key: DB_DATABASE
-Value: /home/site/wwwroot/database.sqlite
+Value: /home/site/wwwroot/database.sqlite`
+
+
+
 
 5. then added the github as the source and build and deployed the application
+
 6. then went to advance tools inside the development tools and opened kudo
 
-problem with the SLite and azure described here
-https://daniellethurow.com/blog/2020/4/21/azure-app-services-and-sqllite3
+
 
 look here for the ftp method to host website.
 https://www.youtube.com/watch?v=fpR1TtrheVE
 
 
-back up default file
+7. back up default file, which is most inportant for the laravel backend inside Azure. you will find it inside the directory shown below. you will need to go to the Development tools section on the left hand side of the Azure backend resource and then select SSH terminal. Once the terminal is opened, you will be able to see the default file inside that directory.
 
- you will get the default file here
- cd /etc/nginx/sites-available/
+` cd /etc/nginx/sites-available/`
 
-"
+ 
+
+
+````bash
 server {
     #proxy_cache cache;
         #proxy_cache_valid 200 1s;
@@ -191,37 +197,48 @@ server {
         fastcgi_busy_buffers_size 256k;
         fastcgi_temp_file_write_size 256k;
     }
-}"
+}
+````
 
 
+8. After you change the content inside the dafault file for the laravel, you need to restart the nginx server using this command given below.
 
-# use this command to restart the nginx service
-service nginx restart
+`service nginx restart`
 
-to check if gender 0 is included from the database table. first I tried with database.sqlite in desktop
-SELECT kjonn, COUNT(*) 
-FROM coded_census 
-WHERE kilde = 'census_1910' 
-AND kommunenr = '1902'
-GROUP BY kjonn;
+9. For our project we wanted to use the same SQLite database, that we were using locally on the machine.Now to upload the database to the backend server, there were lot of online reousrces that were suggesting to use the KUDO terminal to upload the database. It was not possible in our case, so I used Filezilla to transfer the file from my local machine to the server.The file name was changed to database.sqlite and then uploaded inside this directory so that Azure backend can find the database based on what we had set in the environment variable `/home/site/wwwroot/`. Since we defined the name to be database.sqlite it should match.
+You can install the FileZilla locally on the client machine using this link 
+`https://filezilla-project.org/`
+
+ You will need to have the credentials from the Azure portal to login to the backend server and transfer the file.And we can find it under Deployment and deployment center on the left hand panel from Azure and then the credentials are listed inside the FTPS credentials.And when you open the Filezilla client you can leave the port empty because it choose the port by default.Then you can drag and drop the database from the local machine to the server simply to put your database in the azure backend.
+
+ Note that, you will not be able to upload the file more than 10GB in the basic plan.IN our case we upgraded it to 
+Premium0V3 (P0v3) as our database was more than 26GB.
+
+## Some descrepencies arises when we uploaded the same version of the database on the server 
+The problem arises when we uploaded the same version of the database on the server on the data loading parts for the graphs and maps.It was because the data was loaded in different format. i.e. string and integer from two different databases. And in our code there was no such part where we were hanlding the different data types from the response.it is shown on the code below how we hanlded this part:
 
 
-both database.sqlite and histlab_tables_copy_new doesnot have gender 0. which means the database in azure should give data without gender 0
-
-
-the problem was with the part where we had defined the gender as such  in the frontend and to fix it we need to handle both inter and string types
-as shown below
-before
+previous code
+````bash
 "{#if data.gender === "1"}"
 {#if femaleData.age_group === data.age_group && femaleData.gender === "2"}
 
-after
+````
+
+new code
+````bash
 "{#if data.gender === "1" || data.gender === 1}"
 {#if femaleData.age_group === data.age_group && (femaleData.gender === "2" || femaleData.gender === 2)}
+````
+
+Morevoer, for the occupation code, this didnot work because, the occupation code was written as 06110 instead of 6110. So changed this part on the frontend code in the defination part as shown below:
+````bash
+const occupationMap = {
+    "6110": "Doctor",
+    "6400": "Pharmacist",
+    "7320": "Midwife",
+  };
+````
 
 
-for the occupation code, this didnot work because, the occupation code was written as 06110 instead of 6110. so it might not work in the local versio now.
-
-to load the site and test, the api is changed as shown below>
-/api/population-by-marital-group-based-on-gender/${selectedYear}`
 

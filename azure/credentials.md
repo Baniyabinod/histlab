@@ -1,6 +1,7 @@
 New subscription "Lab- Binod Baniya (FOF)" was created by Rolf Anderson to me and then using that I am able to create the new resource group in the Azure. I have created the a resource group such as "HistLabProject" and that used to create many services such as App service and then Azure Database.
 
-# Azure Database for MySql flexible server
+# Azure Database for MySql flexible server which we didnot use in this project
+
 
 credentials used:
 ````bash
@@ -32,6 +33,7 @@ database name: rhdprod
 3. Then before dumping our database, we used the command `use rhdprod`
 
 4. Then , I dumped my database from the computer using this command where I directly source it through my local machine and it took quite some time to dump all the databases.
+`command will be azure page`
 
 
 
@@ -99,14 +101,3 @@ api_location: "build/server" # Api source code path - optional
 output_location: "build/static" # Built app content directory - optional
 
 
-
-
-
-
-
-/history : page has the perfect lenght of the text 
-problems wtih less importance.
-1. my mac the home page is of perfect size but for the larger screen in my office the home page looks wit lots of space on the box.
-2. width of the container in the about us page looks nice in mac but it doesnot look good in large screen.
-3. width of the container in the contact us page looks nice in mac but it is not good in large screen
-4. 
