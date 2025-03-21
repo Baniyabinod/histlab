@@ -225,37 +225,3 @@ for the occupation code, this didnot work because, the occupation code was writt
 to load the site and test, the api is changed as shown below>
 /api/population-by-marital-group-based-on-gender/${selectedYear}`
 
-added the cors link in the backend to test the data
-https://portal.azure.com/#@UniversitetetiTromso.onmicrosoft.com/resource/subscriptions/208f996a-c2a8-425c-9530-c7f445779514/resourceGroups/HistLabProject/providers/Microsoft.Web/sites/histlabbackend/apiCors
-
-
-
-# indexing in database
-This command below helps us to list the indexes for the coded_census table in our database.
-PRAGMA index_list('your_table_name');
-
-Looking into the laravel functions we listed out the columns that we have been using so far to create an index.For this, we identify columns frequently used in WHERE, JOIN, or ORDER BY clauses
-
-1. kilde
-2. census_year
-3. age_group
-4. kjonn
-5. kommunenr
-6. sivilstatus
-7. occ_napp_hisco
-8. statsborgerskap
-9. faar
-
-Based on that, following indexes were created.
-
-0	idx_coded_census_kilde_kommunenr	0	c	0
-1	idx_coded_census_kilde_sivilstatus_faar_kjonn	0	c	0
-2	idx_coded_census_kilde_faar_kjonn	0	c	0
-3	idx_coded_census_faar	0	c	0
-4	idx_coded_census_sivilstatus	0	c	0
-5	idx_coded_census_kilde_sivilstatus_faar	0	c	0
-6	idx_coded_census_ts_kommunenr_occ_napp_hisco	0	c	0
-7	idx_ts_kommunenr	0	c	0
-8	idx_coded_census_kilde	0	c	0
-9	idx_coded_census_id	0	c	0
-
