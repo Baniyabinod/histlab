@@ -1,3 +1,34 @@
+# Azure fronetent with static web app
+
+## Process of creating the static web app
+1. Subscription - Lab - Binod Baniya (FOF)
+2. resourece group - HistLab
+3. name  - rhd-frontend
+4. plan type - free
+5. region - global
+6. deployment details - github
+7. Organization - Baniyabinod
+8. repository - UiT-v2
+9. branch - main
+10. Build Presets - SvelteKit
+11. app location - ./
+12. api_location - build/server
+12. output location - build/static
+
+After all these configurations, we an preview it first and then create it.It will automatically deploy the site and provide us the link for our site which can be found on the overview page.
+
+The link for the test production is given below:
+
+
+
+imp:
+config in .yml file that hosted the frontend
+
+app_location: "./" # App source code path
+api_location: "build/server" # Api source code path - optional
+output_location: "build/static" # Built app content directory - optional
+
+
 # Following configurations are used in the project
 
 ````bash
