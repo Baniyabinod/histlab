@@ -95,3 +95,78 @@ Note, that any changes made in the backend server from the Azure portal or simpl
 After you change the content inside the dafault file for the laravel, you need to restart the nginx server using this command given below.
 
 `service nginx restart`
+
+
+# Custom configuration for the backend app in the laravel project
+Since , we are deploying it using the GitHub Actions, a new deployment could have overwritten or excluded your custom web.config or .htaccess or startup script. So we need to write the custom Start up script like this to avoid doing the steps described above multiple times.
+
+````bash
+#!/bin/bash
+
+echo "Running custom Nginx startup script..." >> /home/LogFiles/startup.log
+
+cp /home/site/wwwroot/nginx-laravel.conf /etc/nginx/sites-available/default
+nginx -s reload
+echo " Nginx config applied successfully." >> /home/LogFiles/startup.log
+````
+Then in Azure, set this as the Startup Command:
+````bash
+bash startup.sh
+
+````
+
+Now, as we change the default file inside the `  /etc/nginx/sites-available/` to make it compatible with laravel, we are going to create the new config file in our backend project like show here: This file is same as the file that we wrote above in the default file. The only thing we want to make sure is that, with this startup.sh in place, our config will reapply itself every time, protecting you from that issue — and solving the Laravel /public root problem permanently in production.
+
+nginx-laravel.conf
+````bash
+server {
+    #proxy_cache cache;
+        #proxy_cache_valid 200 1s;
+    listen 8080;
+    listen [::]:8080;
+    # root /home/site/wwwroot;
+    root /home/site/wwwroot/public; #changed for laravel
+    index  index.php index.html index.htm;
+    # server_name  example.com www.example.com;
+    server_name histlabbackend-fkbxbmhkdbccf0hn.norwayeast-01.azurewebsites.net; #changed to put our server name
+    port_in_redirect off;
+
+    location / {            
+        index  index.php index.html index.htm hostingstart.html;
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # redirect server error pages to the static page /50x.html
+    #
+    # error_page   500 502 503 504  /50x.html; #commented out for laravel so that laravel debug mode pages are shown
+    location = /50x.html {
+        root   /html/;
+    }
+    
+    # Disable .git directory
+    location ~ /\.git {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    # Add locations of phpmyadmin here.
+    location ~* [^/]\.php(/|$) {
+        fastcgi_split_path_info ^(.+?\.[Pp][Hh][Pp])(|/.*)$;
+        fastcgi_pass 127.0.0.1:9000;
+        include fastcgi_params;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param QUERY_STRING $query_string;
+        fastcgi_intercept_errors on;
+        fastcgi_connect_timeout         300; 
+        fastcgi_send_timeout           3600; 
+        fastcgi_read_timeout           3600;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 4 256k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
+    }
+}
+````

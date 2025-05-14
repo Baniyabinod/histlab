@@ -80,24 +80,7 @@ uit@0.0.1 C:\Users\bba065\work\census\census-frontend\UIT-v2
 │   └── vite@6.0.3 deduped
 └── vite@6.0.3
 
-command: tree src/routes 
 
-output:
-Folder PATH listing for volume OS
-Volume serial number is 7C34-A1D4
-C:\USERS\BBA065\WORK\CENSUS\CENSUS-FRONTEND\UIT-V2\SRC\ROUTES
-├───about
-├───contact
-├───documentation
-├───graph
-├───history
-├───map
-├───navbar1
-├───navbar3
-├───partners
-│   ├───projectDescriptionFirst
-│   └───projectDescriptionSecond
-└───search
 
 
 
@@ -105,7 +88,7 @@ C:\USERS\BBA065\WORK\CENSUS\CENSUS-FRONTEND\UIT-V2\SRC\ROUTES
 ````
 
 
-Our frontend project has very few environment variables set in locally as shown below>
+Our frontend project has very few environment variables set in locally as shown below: Since we remove the email option, I have commented it on the code.
 
 ````bash
 VITE_PUBLIC_GMAIL_HOST=smtp.gmail.com
@@ -176,5 +159,5 @@ jobs:
           action: "close"
 ````
 
-These varaibles alos needs to be inside the github secrets so that it will fetch the value and then link it during the build process in Azure Static Web app.For that, you need to go to settings-secrets and varaibles. Then choose cations and you will see the Secrets maintained inside it.
+These varaibles alos needs to be inside the github secrets so that it will fetch the value and then link it during the build process in Azure Static Web app.For that, you need to go to settings-secrets and varaibles. Then choose actions and you will see the Secrets maintained inside it.
 If this doesnot work, you may also need to configure it in Azure under settings, environment varaibles and add your key value pair there. It is not confirmed at our end but if setting the environment variables only inside github doesnot work then you may have to set it over there aswell.
